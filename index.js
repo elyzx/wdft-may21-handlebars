@@ -8,9 +8,6 @@ require('dotenv').config()
 
 const port = 3000;
 
-// require some data form your data.js file
-let {students, instructors, getStudents, getTeachers} = require('./data')
-
 // just a simple middleware to show you how it works
 // you will always see that console.log when you visit any page
 app.use((req, res, next) => {
@@ -30,39 +27,24 @@ hbs.registerPartials(__dirname + '/views/partials')
 
 
 // ROUTES DEFINED BELOW
+// Home page
+const homeRouter = require('./routes/home.routes')
+app.use('/', homeRouter)
+// Students page
+const studentsRouter = require('./routes/students.routes')
+app.use('/', studentsRouter)
+// Instructors page
+const teacherRouter = require('./routes/instructors.routes')
+app.use('/', teacherRouter)
 
-app.get("/", (req, res) => {
-    let myName = 'Manish'
-    console.log (  process.env.PASSWORD  )
-    res.render('landing.hbs', {name: myName, age: 19})
-});
-
-app.get('/students', (req, res) => {
-    // Consuming a promise here
-    getStudents()
-        .then(( myStudents ) => {
-            console.log(myStudents)
-            let uppercaseNames = myStudents.map((student) => {
-                student.name = student.name.toUpperCase()
-                return student
-            })
-        
-            res.render('students.hbs', {students: uppercaseNames})
-        })
-        .catch(() => {
-            console.log('Students failed to fetch')
-        })
+//  404 middleware
+app.use((req, res) => {
+    res.status(404).send('Page not found :(')
 })
 
-app.get('/instructors', (req, res) => {
-    // Consuming a promise here
-    getTeachers()
-        .then(( teachers) => {    
-            res.render('instructors.hbs', {instructors: teachers, layout: false})
-        })
-        .catch(() => {
-            console.log('Instructors failed to fetch')
-        })
+// Error handling middleware - by specifying four parameters
+app.use((err, req, res, next) => {
+    res.status(500).send(err)
 })
 
 // Express setup to listen for all client requests on a certain port

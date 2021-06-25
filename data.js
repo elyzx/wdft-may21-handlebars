@@ -70,6 +70,7 @@ function getTeachers(){
             // assume we fetch the teahers from somehwere
             // we resolve the promise and pass the `instructors` declared at the top of the file
             resolve(instructors)
+            // reject()
         }, 1000)
     })
     return myPromise
